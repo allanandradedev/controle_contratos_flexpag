@@ -1,22 +1,22 @@
 import validate_docbr as docbr
-from tkinter import messagebox
+import datetime as dt
 
 
 class Validations:
     def __init__(self):
         pass
 
-    def validate_doc(self, value: str):
+    @staticmethod
+    def validate_cnpj(value: str):
         if docbr.CNPJ().validate(value):
             return docbr.CNPJ().mask(value)
-        elif docbr.CPF().validate(value):
-            return docbr.CPF().mask(value)
         else:
-            messagebox.showerror(title='Valor Invalido', message='Insira um valor válido.')
+            return False
 
-
-
+    @staticmethod
+    def validate_dates(date):
+        return dt.datetime.strptime(date,'%d/%m/%Y')
 
 
 if __name__ == '__main__':
-    Validations().validate_doc('000000000')
+    pass
