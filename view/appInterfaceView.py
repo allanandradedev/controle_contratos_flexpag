@@ -8,7 +8,6 @@ OUTPUT_PATH = Path(__file__).parent.parent
 ASSETS_PATH = OUTPUT_PATH
 
 
-
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
@@ -21,9 +20,9 @@ class AppInterface(Tk):
 
     def login_page(self):
 
-        self.title('Sistema de Automações Flexpag')
-        self.geometry("630x390")
-        self.configure(bg="#FFFFFF")
+        self.title('Controle de Contratos FlexPag')
+        self.geometry("1260x768")
+        self.configure(bg="#005E9F")
         self.resizable(False, False)
 
         global login_field_image_path
@@ -31,12 +30,14 @@ class AppInterface(Tk):
         global password_image
         global logo_image
         global enter_button_image
+        global woman_image_path
+        global login_image_path
 
         self.canvas = Canvas(
             self,
-            bg="#FFFFFF",
-            height=390,
-            width=630,
+            bg="#005E9F",
+            height=768,
+            width=1260,
             bd=0,
             highlightthickness=0,
             relief="ridge"
@@ -44,39 +45,65 @@ class AppInterface(Tk):
 
         self.canvas.place(x=0, y=0)
 
+        logo_image = PhotoImage(
+            file=relative_to_assets("lp_logo_white.png"))
+        self.canvas.create_image(
+            313.0,
+            157.0,
+            image=logo_image
+        )
+
+        woman_image_path = PhotoImage(
+            file=relative_to_assets("lp_woman_image.png"))
+        self.canvas.create_image(
+            313.0,
+            461.0,
+            image=woman_image_path
+        )
+
+        # Frame do login
+        self.canvas.create_rectangle(
+            630.0,
+            0.0,
+            1260.0,
+            768.0,
+            fill="#FFFFFF",
+            outline="")
+
         login_field_image_path = PhotoImage(
             file=relative_to_assets("lp_login_field_img.png"))
 
         self.canvas.create_image(
-            315.0,
-            163.0,
+            944.5,
+            318.0,
             image=login_field_image_path
         )
+
         login_field = PlaceHolderEntry(
             self.canvas,
-            'Insert your login',
+            'Insira seu nome de usuário',
             bd=0,
-            bg="#ECECEC",
+            bg="#EFEFEF",
             highlightthickness=0
         )
 
         login_field.place(
-            x=118.0,
-            y=142.0,
-            width=394.0,
-            height=40.0
+            x=698.0,
+            y=293.0,
+            width=493.0,
+            height=48.0
         )
 
         password_field_image_path = PhotoImage(
             file=relative_to_assets("lp_password_field_img.png"))
         self.canvas.create_image(
-            315.0,
-            234.0,
+            944.5,
+            409.0,
             image=password_field_image_path
         )
         password_field = PlaceHolderEntry(
             self.canvas,
-            'Insert your password',
+            'Insira sua senha',
             'gray',
             bd=0,
             type='password',
@@ -84,58 +111,79 @@ class AppInterface(Tk):
             highlightthickness=0
         )
         password_field.place(
-            x=118.0,
-            y=213.0,
-            width=394.0,
-            height=40.0
+            x=698.0,
+            y=384.0,
+            width=493.0,
+            height=48.0
+        )
+
+        login_title_image_path = PhotoImage(
+            file=relative_to_assets("lp_login_title_img.png"))
+        self.canvas.create_image(
+            945.0,
+            206.0,
+            image=login_title_image_path
+        )
+
+        login_title = Label(
+            text='Faça o Login para Continuar',
+            bd=0,
+            font=("Roboto Bold", '20'),
+            fg='#005E9F',
+            bg="#FFFFFF",
+            highlightthickness=0
+        )
+        login_title.place(
+            x=754.0,
+            y=184.0,
+            width=382.0,
+            height=42.0
         )
 
         password_image = PhotoImage(
             file=relative_to_assets("lp_password_img.png"))
+
         self.canvas.create_image(
-            141.5,
-            200.0,
+            718.0,
+            363.5,
             image=password_image
         )
-        password_label = Label(
-            bd=0,
-            bg="#FFFFFF",
-            highlightthickness=0,
-            text="Password"
-        )
-        password_label.place(
-            x=108.0,
-            y=191.0,
-            width=67.0,
-            height=16.0
-        )
 
-        logo_image = PhotoImage(
-            file=relative_to_assets("lp_logo_blue.png"))
-        self.canvas.create_image(
-            315.0,
-            73.0,
-            image=logo_image
-        )
-
-        login_image = PhotoImage(
+        login_image_path = PhotoImage(
             file=relative_to_assets("lp_login_img.png"))
         self.canvas.create_image(
-            127.0,
-            126.0,
-            image=login_image
+            715.0,
+            269.5,
+            image=login_image_path
         )
         login_label = Label(
+            text='Login',
+            font=("Roboto", '12'),
             bd=0,
             bg="#FFFFFF",
-            highlightthickness=0,
-            text='Login'
+            fg='#818181',
+            highlightthickness=0
         )
         login_label.place(
-            x=108.0,
-            y=117.0,
-            width=38.0,
-            height=16.0
+            x=690.0,
+            y=261.0,
+            width=50.0,
+            height=21.0
+        )
+
+        password_label = Label(
+            text='Senha',
+            font=("Roboto", '12'),
+            bd=0,
+            bg="#FFFFFF",
+            fg='#808080',
+            highlightthickness=0
+        )
+        password_label.place(
+            x=690.0,
+            y=355.0,
+            width=56.0,
+            height=21.0
         )
 
         enter_button_image = PhotoImage(
@@ -148,10 +196,10 @@ class AppInterface(Tk):
             relief="flat"
         )
         enter_button.place(
-            x=103.0,
-            y=282.0,
-            width=424.0,
-            height=45.0
+            x=773.0,
+            y=478.0,
+            width=344.0,
+            height=67.0
         )
 
     def switch_window(self):

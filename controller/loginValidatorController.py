@@ -7,7 +7,15 @@ def login_page_validations(login_field, password_field):
     login_info = {
         login_field.get(): password_field.get()
     }
-    if not login_field.get():
+    if login_field.get() == 'Insira seu nome de usuário':
+        messagebox.showinfo(title='Empty fields', message='Login em falta, por favor preencha o campo e'
+                                                          ' tente novamente')
+        return 500
+    elif password_field.get() == 'Insira sua senha':
+        messagebox.showinfo(title='Empty fields', message='Senha em falta, por favor preencha o campo e'
+                                                          ' tente novamente')
+        return 500
+    elif not login_field.get():
         messagebox.showinfo(title='Empty fields', message='Login em falta, por favor preencha o campo e'
                                                           ' tente novamente')
         return 500
