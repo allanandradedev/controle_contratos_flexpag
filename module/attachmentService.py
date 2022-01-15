@@ -1,6 +1,7 @@
 import subprocess
 import shutil
 
+
 class AttachmentManagerService:
     def __init__(self):
         pass
