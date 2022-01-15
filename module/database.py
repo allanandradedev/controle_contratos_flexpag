@@ -9,6 +9,9 @@ class SQLiteDatabase:
         self.__conexao = sqlite3.connect('Contracts.db')
         self.initiate_db()
 
+    def connection(self):
+        return self.__conexao
+
     @property
     def connect(self):
         if not self.__conexao:
@@ -51,9 +54,9 @@ class SQLiteDatabase:
 
     def search_by_input(self, value):
         if Validations.validate_cnpj(value):
-            self.search_by_cnpj(value)
+            return self.search_by_cnpj(value)
         else:
-            self.search_by_hired(value)
+            return self.search_by_hired(value)
 
     def search_by_hired(self, hired):
         cursor = self.__conexao.cursor()
@@ -61,7 +64,7 @@ class SQLiteDatabase:
             SELECT * FROM contratos
                 WHERE contratado LIKE '{hired}%';
         ''')
-        print(cursor.fetchall())
+        return cursor.fetchall()
 
     def search_by_cnpj(self, cnpj):
         cursor = self.__conexao.cursor()
@@ -69,7 +72,7 @@ class SQLiteDatabase:
                     SELECT * FROM contratos
                         WHERE cnpj == {cnpj};
                 ''')
-        print(cursor.fetchall())
+        return cursor.fetchall()
 
     # ------------------------------------------------------------------------------
 
@@ -184,15 +187,14 @@ class SQLiteDatabase:
 
 if __name__ == '__main__':
     banco = SQLiteDatabase()
-    banco.drop_table()
-    banco.initiate_db()
-    banco.new_contract('Sistema RD Real', '13021784000186', 'Contratos Gerais', 'COMERCIAL', 'PRESTAÇÃO DE SERVIÇO',
-                       '01/07/2022', '16/07/2022', 'VIGENTE')
-    banco.search_by_input('13021784000186')
-    banco.edit_contract('1', 'teste', 'teste', 'teste', 'teste', 'teste', '15/02/2020', '15/02/2022', 'teste',)
-    banco.search_by_input('teste')
-    banco.renovate_contract('1','21/05/2025')
-    banco.search_by_input('teste')
-    banco.delete_contract('1')
-    banco.search_by_input('teste')
+    # banco.new_contract('Thaina Freitas', '13021784000186', 'Contratos Gerais', 'COMERCIAL', 'PRESTAÇÃO DE SERVIÇO',
+    #                    '01/07/2022', '16/07/2022', 'VIGENTE')
+    # banco.commit()
+    banco.search_by_input('Luis Inacio')
+    banco.edit_contract('2', 'Luciclaudio', '12345678901', 'teste', 'teste', 'teste', '15/02/2020', '15/02/2022', 'teste',)
+    banco.search_by_input('Luciclaudio')
+    banco.renovate_contract('2','15/02/2025')
+    banco.search_by_input('Luciclaudio')
+    banco.delete_contract('2')
+    banco.search_by_input('Luciclaudio')
     banco.update_list()
