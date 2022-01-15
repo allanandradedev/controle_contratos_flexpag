@@ -16,7 +16,3 @@ class Validations:
     @staticmethod
     def validate_dates(date):
         return dt.datetime.strptime(date,'%d/%m/%Y')
-
-
-if __name__ == '__main__':
-    pass

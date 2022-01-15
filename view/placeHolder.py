@@ -3,12 +3,12 @@ from tkinter import *
 
 class PlaceHolderEntry(Entry):
     def __init__(self, master=None, placeholder = 'PLACEHOLDER', color='gray', bd=None, type= None, bg=None,
-                 highlightthickness=None):
+                 highlightthickness=None, default_fg_color = None):
         super().__init__(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
-        self.default_fg_color = self['fg']
+        self.default_fg_color = default_fg_color
 
         self.bind('<FocusIn>', self.foc_in)
         self.bind('<FocusOut>', self.foc_out)

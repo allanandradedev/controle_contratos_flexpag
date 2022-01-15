@@ -3,6 +3,7 @@ from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label
 from controller.loginValidatorController import *
 from controller.pathSelectorController import select_path
 from view.placeHolder import *
+from module.database import *
 
 OUTPUT_PATH = Path(__file__).parent.parent
 ASSETS_PATH = OUTPUT_PATH
@@ -17,13 +18,13 @@ class AppInterface(Tk):
         super().__init__()
         self.canvas = Canvas(self)
         self.login_page()
-
-    def login_page(self):
-
         self.title('Controle de Contratos FlexPag')
         self.geometry("1260x768")
         self.configure(bg="#005E9F")
         self.resizable(False, False)
+        self.database = SQLiteDatabase()
+
+    def login_page(self):
 
         global login_field_image_path
         global password_field_image_path
@@ -84,6 +85,7 @@ class AppInterface(Tk):
             'Insira seu nome de usuário',
             bd=0,
             bg="#EFEFEF",
+            default_fg_color='#000000',
             highlightthickness=0
         )
 
@@ -107,6 +109,7 @@ class AppInterface(Tk):
             'gray',
             bd=0,
             type='password',
+            default_fg_color='#000000',
             bg="#ECECEC",
             highlightthickness=0
         )
@@ -202,8 +205,91 @@ class AppInterface(Tk):
             height=67.0
         )
 
+    def ui_screen(self):
+
+        global upper_field_image
+        global search_field_image
+        global add_contract_image
+        global search_button_image
+
+        self.canvas = Canvas(
+            self,
+            bg="#005E9F",
+            height=768,
+            width=1260,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+
+        self.canvas.place(x=0, y=0)
+        upper_field_image = PhotoImage(
+            file=relative_to_assets("ti_upper_field_img.png"))
+        self.canvas.create_image(
+            629.0,
+            53.0,
+            image=upper_field_image
+        )
+
+        search_field_image = PhotoImage(
+            file=relative_to_assets("ti_search_field_img.png"))
+        self.canvas.create_image(
+            275.5,
+            53.0,
+            image=search_field_image
+        )
+        search_field = PlaceHolderEntry(
+            self.canvas,
+            placeholder='Insira o contratado ou CNPJ.',
+            color='#EFEFEF',
+            bd=0,
+            bg="#005E9F",
+            default_fg_color='#FFFFFF',
+            highlightthickness=0
+        )
+        search_field.place(
+            x=76.0,
+            y=35.0,
+            width=399.0,
+            height=34.0
+        )
+
+        search_button_image = PhotoImage(
+            file=relative_to_assets("ti_search_button_img.png"))
+        search_button = Button(
+            image=search_button_image,
+            borderwidth=0,
+            bg=None,
+            highlightthickness=0,
+            command=lambda: self.database.search_by_input(search_field.get()),
+            relief="flat"
+        )
+        search_button.place(
+            x=445.0,
+            y=40.0,
+            width=27.0,
+            height=27.0
+        )
+
+        add_contract_image = PhotoImage(
+            file=relative_to_assets("ti_add_contract_button_img.png"))
+        add_contract_button = Button(
+            image=add_contract_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_2 clicked"),
+            relief="flat"
+        )
+        add_contract_button.place(
+            x=991.0,
+            y=34.0,
+            width=223.0,
+            height=39.0
+        )
+
     def switch_window(self):
         self.canvas.destroy()
+        self.ui_screen()
 
     def validate_login(self, login_field, password_field):
         validation = login_page_validations(login_field, password_field)

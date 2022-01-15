@@ -1,5 +1,5 @@
 import sqlite3
-from validationService import *
+from module.validationService import *
 
 
 class SQLiteDatabase:
@@ -53,8 +53,10 @@ class SQLiteDatabase:
 
     def search_by_input(self, value):
         if Validations.validate_cnpj(value):
+            print(self.search_by_cnpj(value))
             return self.search_by_cnpj(value)
         else:
+            print(self.search_by_hired(value))
             return self.search_by_hired(value)
 
     def search_by_hired(self, hired):
