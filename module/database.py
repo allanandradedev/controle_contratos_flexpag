@@ -1,5 +1,4 @@
 import sqlite3
-import pandas as pd
 from validationService import *
 
 
@@ -62,7 +61,8 @@ class SQLiteDatabase:
         cursor = self.__conexao.cursor()
         cursor.execute(f'''
             SELECT * FROM contratos
-                WHERE contratado LIKE '{hired}%';
+                WHERE contratado LIKE '{hired}%'
+                    ORDER BY data_vencimento;
         ''')
         return cursor.fetchall()
 
@@ -70,7 +70,8 @@ class SQLiteDatabase:
         cursor = self.__conexao.cursor()
         cursor.execute(f'''
                     SELECT * FROM contratos
-                        WHERE cnpj == {cnpj};
+                        WHERE cnpj == {cnpj}
+                            ORDER BY data_vencimento;
                 ''')
         return cursor.fetchall()
 
@@ -183,18 +184,3 @@ class SQLiteDatabase:
 
     def commit(self):
         self.__conexao.commit()
-
-
-if __name__ == '__main__':
-    banco = SQLiteDatabase()
-    # banco.new_contract('Thaina Freitas', '13021784000186', 'Contratos Gerais', 'COMERCIAL', 'PRESTAÇÃO DE SERVIÇO',
-    #                    '01/07/2022', '16/07/2022', 'VIGENTE')
-    # banco.commit()
-    banco.search_by_input('Luis Inacio')
-    banco.edit_contract('2', 'Luciclaudio', '12345678901', 'teste', 'teste', 'teste', '15/02/2020', '15/02/2022', 'teste',)
-    banco.search_by_input('Luciclaudio')
-    banco.renovate_contract('2','15/02/2025')
-    banco.search_by_input('Luciclaudio')
-    banco.delete_contract('2')
-    banco.search_by_input('Luciclaudio')
-    banco.update_list()

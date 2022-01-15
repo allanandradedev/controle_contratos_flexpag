@@ -37,7 +37,3 @@ class ReportGenerator:
     def generate_report(self, value, path):
         data = self.__database.search_by_input(value)
         self.model(path, data)
-
-
-if __name__ == '__main__':
-    ReportGenerator().generate_report('S','teste.xlsx')
