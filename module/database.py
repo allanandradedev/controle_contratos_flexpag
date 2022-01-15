@@ -5,7 +5,7 @@ from module.validationService import *
 class SQLiteDatabase:
     # -------------------- INITIALIZATION METHODS ------------------------------------------
     def __init__(self):
-        self.__conexao = sqlite3.connect('Contracts.db')
+        self.__conexao = sqlite3.connect('module\\Contracts.db')
         self.initiate_db()
 
     def connection(self):
@@ -14,7 +14,7 @@ class SQLiteDatabase:
     @property
     def connect(self):
         if not self.__conexao:
-            self.__conexao = sqlite3.connect('Contracts.db')
+            self.__conexao = sqlite3.connect('module\\Contracts.db')
         return self.__conexao
 
     def drop_table(self):
@@ -53,10 +53,8 @@ class SQLiteDatabase:
 
     def search_by_input(self, value):
         if Validations.validate_cnpj(value):
-            print(self.search_by_cnpj(value))
             return self.search_by_cnpj(value)
         else:
-            print(self.search_by_hired(value))
             return self.search_by_hired(value)
 
     def search_by_hired(self, hired):
@@ -186,3 +184,9 @@ class SQLiteDatabase:
 
     def commit(self):
         self.__conexao.commit()
+
+if __name__ == '__main__':
+    banco = SQLiteDatabase()
+    banco.new_contract('Companie Update', '12345678911111', 'teste', 'teste', 'teste', '15/01/2021', '15/01/2025',
+                       'teste')
+    banco.commit()

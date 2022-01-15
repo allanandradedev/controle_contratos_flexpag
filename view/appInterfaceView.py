@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label, ttk
 from controller.loginValidatorController import *
 from controller.pathSelectorController import select_path
 from view.placeHolder import *
@@ -211,6 +211,7 @@ class AppInterface(Tk):
         global search_field_image
         global add_contract_image
         global search_button_image
+        global treeview_field_image
 
         self.canvas = Canvas(
             self,
@@ -254,6 +255,92 @@ class AppInterface(Tk):
             height=34.0
         )
 
+
+        treeview_field_image = PhotoImage(
+            file=relative_to_assets("ti_treeview_field_img.png"))
+        self.canvas.create_image(
+            629.0,
+            432.0,
+            image=treeview_field_image
+        )
+
+        # -------- Treeview Settings ----------------------------------
+
+        style = ttk.Style()
+
+        style.theme_use("clam")
+
+        style.configure("Treeview",
+                        background="#005E9F",
+                        foreground="white",
+                        font=('Roboto', 12),
+                        rowheight=35,
+                        fieldbackground="#005E9F",
+                        )
+        style.configure('Treeview.Heading',
+                        font=('Roboto Bold', 13),
+                        foreground='White',
+                        background='#0B74BC',
+                        fieldbackground='#0B74BC',
+                        borderwidth=0)
+
+        style.configure("Vertical.TScrollbar", gripcount=0,
+                        arrowsize=20, arrowcolor="#0B74BC",
+                        background="#005E9F", darkcolor="#0B74BC",
+                        lightcolor="#0B74BC", troughcolor="#0B74BC",
+                        bordercolor="#0B74BC", )
+
+        style.map('Treeview.Heading',
+                  background=[('pressed', '!focus', '#0B74BC'),
+                              ('active', '#0B74BC'),
+                              ('disabled', '#0B74BC')]
+                  )
+
+        style.map('Vertical.TScrollbar',
+                  background=[('pressed', '!focus', '#005E9F'),
+                              ('active', '#005E9F'),
+                              ('disabled', '#005E9F')]
+                  )
+
+        style.layout("Treeview",
+                     [('mystyle.Treeview.treearea',
+                       {'sticky': 'nswe'})])
+
+        style.map("Treeview",
+                  background=[('selected', '#2285CA')])
+
+        # ---------------------------------------------------------
+
+        # ------- Treeview Frame Settings -------------------------
+
+        treeview_frame = Frame(self.canvas)
+        treeview_frame.place(
+            x=38.0,
+            y=140.0,
+            width=1180.0,
+            height=575.0)
+
+        treeview_scrollbar = ttk.Scrollbar(treeview_frame, orient=VERTICAL)
+        treeview_scrollbar.pack(side=RIGHT, fill=Y)
+
+        tv = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings', padding='5',
+                          yscrollcommand=treeview_scrollbar.set)
+        tv.place(
+            width=1160.0,
+            height=575.0
+        )
+
+        treeview_scrollbar.config(command=tv.yview)
+
+        tv.heading(1, text='Id')
+        tv.heading(2, text='Contratado')
+        tv.heading(3, text='CNPJ')
+        tv.heading(4, text='Inicio Vigência')
+        tv.heading(5, text='Data Vencimento')
+        tv.heading(6, text='Situação')
+
+        # ------------------------------------------------------------------------
+
         search_button_image = PhotoImage(
             file=relative_to_assets("ti_search_button_img.png"))
         search_button = Button(
@@ -261,7 +348,7 @@ class AppInterface(Tk):
             borderwidth=0,
             bg=None,
             highlightthickness=0,
-            command=lambda: self.database.search_by_input(search_field.get()),
+            command=lambda: self.insert_search_into_treeview(tv, self.database, search_field.get()),
             relief="flat"
         )
         search_button.place(
@@ -286,6 +373,18 @@ class AppInterface(Tk):
             width=223.0,
             height=39.0
         )
+
+        self.insert_search_into_treeview(tv, self.database, search_field.get())
+
+    def insert_search_into_treeview(self, treeview, database, search):
+        if search == 'Insira o contratado ou CNPJ.':
+            search = ''
+        else:
+            search = search
+        rows = database.search_by_input(search)
+        treeview.delete(*treeview.get_children())
+        for i in rows:
+            treeview.insert('', 'end', values=i)
 
     def switch_window(self):
         self.canvas.destroy()
