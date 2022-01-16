@@ -4,6 +4,7 @@ from controller.loginValidatorController import *
 from controller.pathSelectorController import select_path
 from view.placeHolder import *
 from module.database import *
+from controller.addContractValidatorController import *
 
 OUTPUT_PATH = Path(__file__).parent.parent
 ASSETS_PATH = OUTPUT_PATH
@@ -255,7 +256,6 @@ class AppInterface(Tk):
             height=34.0
         )
 
-
         treeview_field_image = PhotoImage(
             file=relative_to_assets("ti_treeview_field_img.png"))
         self.canvas.create_image(
@@ -316,9 +316,9 @@ class AppInterface(Tk):
 
         treeview_frame = Frame(self.canvas)
         treeview_frame.place(
-            x=24.0+15,
+            x=24.0 + 15,
             y=135.0,
-            width=1208.0-20,
+            width=1208.0 - 20,
             height=600.0
         )
 
@@ -328,7 +328,7 @@ class AppInterface(Tk):
         tv = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings',
                           yscrollcommand=treeview_scrollbar.set)
         tv.place(
-            width=1208.0-40,
+            width=1208.0 - 40,
             height=600.0
         )
 
@@ -372,7 +372,7 @@ class AppInterface(Tk):
             image=add_contract_image,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=self.add_contract_page,
             relief="flat"
         )
         add_contract_button.place(
@@ -383,6 +383,271 @@ class AppInterface(Tk):
         )
 
         self.insert_search_into_treeview(tv, self.database, search_field.get())
+
+    def add_contract_page(self):
+
+        global title_label_image
+        global entry_field_image
+        global date_field_image
+        global observations_image
+
+        window = Toplevel()
+
+        window.geometry("615x636")
+        window.configure(bg="#FFFFFF")
+        window.title('Adicionar Contrato.')
+
+        canvas = Canvas(
+            window,
+            bg="#FFFFFF",
+            height=636,
+            width=615,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+
+        canvas.place(x=0, y=0)
+
+        title_label_image = PhotoImage(
+            file=relative_to_assets("ac_title_label_img.png"))
+        canvas.create_image(
+            308.0,
+            59.0,
+            image=title_label_image
+        )
+        title_label = Label(
+            master=window,
+            text='Registro de Contrato',
+            font=('Roboto', 20),
+            fg='#005E9F',
+            bd=0,
+            bg="#FFFFFF",
+            highlightthickness=0
+        )
+        title_label.place(
+            x=117.0,
+            y=37.0,
+            width=382.0,
+            height=42.0
+        )
+
+        entry_field_image = PhotoImage(
+            file=relative_to_assets("ac_entry_field_image.png"))
+
+        canvas.create_image(
+            308.5,
+            117.5,
+            image=entry_field_image
+        )
+        hired_entry = PlaceHolderEntry(
+            master=window,
+            placeholder='*Nome do Contratado.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        hired_entry.place(
+            x=62.0,
+            y=98.0,
+            width=493.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            306.5,
+            166.5,
+            image=entry_field_image
+        )
+        cnpj_entry = PlaceHolderEntry(
+            master=window,
+            placeholder='*Insira o CNPJ sem as pontuações.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        cnpj_entry.place(
+            x=60.0,
+            y=147.0,
+            width=493.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            308.5,
+            215.5,
+            image=entry_field_image
+        )
+        contract_type = PlaceHolderEntry(
+            master=window,
+            placeholder='*Tipo de Contrato.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        contract_type.place(
+            x=62.0,
+            y=196.0,
+            width=493.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            308.5,
+            264.5,
+            image=entry_field_image
+        )
+        manager_area = PlaceHolderEntry(
+            master=window,
+            placeholder='*Área Gestora.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        manager_area.place(
+            x=62.0,
+            y=245.0,
+            width=493.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            308.5,
+            313.5,
+            image=entry_field_image
+        )
+        contract_description = PlaceHolderEntry(
+            master=window,
+            placeholder='*Descrição do Contrato.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        contract_description.place(
+            x=62.0,
+            y=294.0,
+            width=493.0,
+            height=37.0
+        )
+
+        date_field_image = PhotoImage(
+            file=relative_to_assets("ac_date_field_img.png"))
+
+        canvas.create_image(
+            170.0,
+            362.5,
+            image=date_field_image
+        )
+        initial_date_entry = PlaceHolderEntry(
+            master=window,
+            placeholder='*Início da Vigência.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        initial_date_entry.place(
+            x=62.0,
+            y=343.0,
+            width=216.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            447.0,
+            362.5,
+            image=date_field_image
+        )
+        end_date_entry = PlaceHolderEntry(
+            master=window,
+            placeholder='*Data de Vencimento.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        end_date_entry.place(
+            x=339.0,
+            y=343.0,
+            width=216.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            308.5,
+            411.5,
+            image=entry_field_image
+        )
+        situation = PlaceHolderEntry(
+            master=window,
+            placeholder='*Situação do Contrato.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        situation.place(
+            x=62.0,
+            y=392.0,
+            width=493.0,
+            height=37.0
+        )
+
+        observations_image = PhotoImage(
+            file=relative_to_assets("ac_observations_image.png"))
+        canvas.create_image(
+            306.5,
+            482.0,
+            image=observations_image
+        )
+        observations = PlaceHolderEntry(
+            master=window,
+            placeholder='Observações adicionais.',
+            default_fg_color='#2B2B2B',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        observations.place(
+            x=60.0,
+            y=441.0,
+            width=493.0,
+            height=80.0
+        )
+
+        add_contract_button_image = PhotoImage(
+            file=relative_to_assets("ac_add_contract_button_img.png"))
+
+        add_contract_button = Button(
+            master=window,
+            image=add_contract_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: self.validate_contract_adittion(window,
+                                                            hired_entry.get(),
+                                                            cnpj_entry.get(),
+                                                            contract_type.get(),
+                                                            manager_area.get(),
+                                                            contract_description.get(),
+                                                            initial_date_entry.get(),
+                                                            end_date_entry.get(),
+                                                            situation.get(),
+                                                            observations.get()),
+            relief="flat"
+        )
+        add_contract_button.place(
+            x=157.0,
+            y=540.0,
+            width=303.0,
+            height=59.01454162597656
+        )
+        window.resizable(False, False)
+        window.mainloop()
 
     def insert_search_into_treeview(self, treeview, database, search):
         global count
@@ -410,6 +675,60 @@ class AppInterface(Tk):
     def switch_window(self):
         self.canvas.destroy()
         self.ui_screen()
+
+    def validate_contract_adittion(self,
+                                   master,
+                                   hired_field,
+                                   cnpj_field,
+                                   contract_type_field,
+                                   manager_area_field,
+                                   contract_description_field,
+                                   start_date_field,
+                                   end_date_field,
+                                   situation_field,
+                                   observation_field
+                                   ):
+
+        if add_contract_page_validations(hired_field,
+                                         cnpj_field,
+                                         contract_type_field,
+                                         manager_area_field,
+                                         contract_description_field,
+                                         start_date_field,
+                                         end_date_field,
+                                         situation_field) and Validations.validate_cnpj(cnpj_field):
+
+            option = messagebox.askyesno(title='Informação Adicional', message='Deseja tornar a adição permanente?')
+
+            if option:
+                self.database.new_contract(hired_field,
+                                           cnpj_field,
+                                           contract_type_field,
+                                           manager_area_field,
+                                           contract_description_field,
+                                           start_date_field,
+                                           end_date_field,
+                                           situation_field,
+                                           observation_field)
+                self.database.commit()
+                master.destroy()
+                self.canvas.focus_force()
+            if not option:
+                master.focus_force()
+
+        elif add_contract_page_validations(hired_field,
+                                           cnpj_field,
+                                           contract_type_field,
+                                           manager_area_field,
+                                           contract_description_field,
+                                           start_date_field,
+                                           end_date_field,
+                                           situation_field) == 500:
+            messagebox.showinfo(title='Campos Vazios', message='Preencha todos os campos obrigatórios para continuar')
+            master.focus_force()
+        else:
+            messagebox.showinfo(title='CNPJ Inválido', message='Verifique o CNPJ e tente novamente')
+            master.focus_force()
 
     def validate_login(self, login_field, password_field):
         validation = login_page_validations(login_field, password_field)

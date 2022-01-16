@@ -60,18 +60,18 @@ class SQLiteDatabase:
     def search_by_hired(self, hired):
         cursor = self.__conexao.cursor()
         cursor.execute(f'''
-            SELECT * FROM contratos
+            SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                 WHERE contratado LIKE '{hired}%'
-                    ORDER BY data_vencimento;
+                    ORDER BY id;
         ''')
         return cursor.fetchall()
 
     def search_by_cnpj(self, cnpj):
         cursor = self.__conexao.cursor()
         cursor.execute(f'''
-                    SELECT * FROM contratos
+                    SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                         WHERE cnpj == {cnpj}
-                            ORDER BY data_vencimento;
+                            ORDER BY id;
                 ''')
         return cursor.fetchall()
 
@@ -88,8 +88,11 @@ class SQLiteDatabase:
                      inicio_vigencia,
                      data_vencimento,
                      situacao,
-                     observacoes=None,
+                     observacoes,
                      renovado='Não'):
+
+        if observacoes == 'Observações adicionais.' or not observacoes:
+            observacoes = None
 
         duracao_contrato = (abs(
                     Validations.validate_dates(inicio_vigencia) - Validations.validate_dates(data_vencimento)).days) + 1

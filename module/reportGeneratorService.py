@@ -2,10 +2,32 @@ from module.database import *
 import xlsxwriter
 
 
-class ReportGenerator:
+class ReportGenerator(SQLiteDatabase):
     def __init__(self):
-        self.__database = SQLiteDatabase()
-        self.__connection = self.__database.connection()
+        super().__init__()
+
+    def search_by_input(self, value):
+        if Validations.validate_cnpj(value):
+            return self.search_by_cnpj(value)
+        else:
+            return self.search_by_hired(value)
+
+    def search_by_cnpj(self, cnpj):
+        cursor = self.__conexao.cursor()
+        cursor.execute(f'''
+                            SELECT * FROM contratos
+                                WHERE cnpj == {cnpj}
+                                    ORDER BY id;
+                        ''')
+        return cursor.fetchall()
+
+    def search_by_hired(self, hired):
+        cursor = self.__conexao.cursor()
+        cursor.execute(f'''
+                    SELECT * FROM contratos
+                        WHERE contratado LIKE '{hired}%'
+                            ORDER BY id;
+                ''')
 
     def model(self, path, search):
 
@@ -35,5 +57,5 @@ class ReportGenerator:
         workbook.close()
 
     def generate_report(self, value, path):
-        data = self.__database.search_by_input(value)
+        data = self.search_by_input(value)
         self.model(path, data)
