@@ -271,22 +271,24 @@ class AppInterface(Tk):
         style.theme_use("clam")
 
         style.configure("Treeview",
-                        background="#005E9F",
+                        background="#0B74BC",
                         foreground="white",
                         font=('Roboto', 12),
-                        rowheight=35,
-                        fieldbackground="#005E9F",
+                        rowheight=40,
+                        fieldbackground="#0B74BC",
                         )
         style.configure('Treeview.Heading',
-                        font=('Roboto Bold', 13),
+                        font=('Arial Bold', 13),
                         foreground='White',
                         background='#0B74BC',
                         fieldbackground='#0B74BC',
-                        borderwidth=0)
+                        rowheight=30,
+                        borderwidth=0,
+                        padding=15)
 
         style.configure("Vertical.TScrollbar", gripcount=0,
                         arrowsize=20, arrowcolor="#0B74BC",
-                        background="#005E9F", darkcolor="#0B74BC",
+                        background="#0B74BC", darkcolor="#0B74BC",
                         lightcolor="#0B74BC", troughcolor="#0B74BC",
                         bordercolor="#0B74BC", )
 
@@ -298,8 +300,7 @@ class AppInterface(Tk):
 
         style.map('Vertical.TScrollbar',
                   background=[('pressed', '!focus', '#005E9F'),
-                              ('active', '#005E9F'),
-                              ('disabled', '#005E9F')]
+                              ('active', '#005E9F')]
                   )
 
         style.layout("Treeview",
@@ -315,19 +316,20 @@ class AppInterface(Tk):
 
         treeview_frame = Frame(self.canvas)
         treeview_frame.place(
-            x=38.0,
-            y=140.0,
-            width=1180.0,
-            height=575.0)
+            x=24.0+15,
+            y=135.0,
+            width=1208.0-20,
+            height=600.0
+        )
 
         treeview_scrollbar = ttk.Scrollbar(treeview_frame, orient=VERTICAL)
         treeview_scrollbar.pack(side=RIGHT, fill=Y)
 
-        tv = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings', padding='5',
+        tv = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings',
                           yscrollcommand=treeview_scrollbar.set)
         tv.place(
-            width=1160.0,
-            height=575.0
+            width=1208.0-40,
+            height=600.0
         )
 
         treeview_scrollbar.config(command=tv.yview)
@@ -338,6 +340,12 @@ class AppInterface(Tk):
         tv.heading(4, text='Inicio Vigência')
         tv.heading(5, text='Data Vencimento')
         tv.heading(6, text='Situação')
+
+        tv.column(1, anchor='center')
+        tv.column(3, anchor='center')
+        tv.column(4, anchor='center')
+        tv.column(5, anchor='center')
+        tv.column(6, anchor='center')
 
         # ------------------------------------------------------------------------
 
@@ -377,14 +385,27 @@ class AppInterface(Tk):
         self.insert_search_into_treeview(tv, self.database, search_field.get())
 
     def insert_search_into_treeview(self, treeview, database, search):
+        global count
+        count = 0
+
+        treeview.tag_configure('oddrow', background='#0B74BC')
+        treeview.tag_configure('evenrow', background='#2083C6')
+
         if search == 'Insira o contratado ou CNPJ.':
             search = ''
         else:
             search = search
+
         rows = database.search_by_input(search)
+
         treeview.delete(*treeview.get_children())
+
         for i in rows:
-            treeview.insert('', 'end', values=i)
+            if count % 2 == 0:
+                treeview.insert('', 'end', values=i, tags='evenrow')
+            else:
+                treeview.insert('', 'end', values=i, tags='oddrow')
+            count += 1
 
     def switch_window(self):
         self.canvas.destroy()
