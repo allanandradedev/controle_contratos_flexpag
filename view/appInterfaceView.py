@@ -5,6 +5,7 @@ from controller.pathSelectorController import select_path
 from view.placeHolder import *
 from module.database import *
 from controller.addContractValidatorController import *
+from module.reportGeneratorService import *
 
 OUTPUT_PATH = Path(__file__).parent.parent
 ASSETS_PATH = OUTPUT_PATH
@@ -24,6 +25,7 @@ class AppInterface(Tk):
         self.configure(bg="#005E9F")
         self.resizable(False, False)
         self.database = SQLiteDatabase()
+        self.report_generator = ReportGenerator()
 
     def login_page(self):
 
@@ -213,6 +215,7 @@ class AppInterface(Tk):
         global add_contract_image
         global search_button_image
         global treeview_field_image
+        global download_report_button_image
 
         self.canvas = Canvas(
             self,
@@ -236,8 +239,8 @@ class AppInterface(Tk):
         search_field_image = PhotoImage(
             file=relative_to_assets("ti_search_field_img.png"))
         self.canvas.create_image(
-            275.5,
-            53.0,
+            265.5,
+            52.0,
             image=search_field_image
         )
         search_field = PlaceHolderEntry(
@@ -245,13 +248,13 @@ class AppInterface(Tk):
             placeholder='Insira o contratado ou CNPJ.',
             color='#EFEFEF',
             bd=0,
-            bg="#005E9F",
+            bg="#2082C5",
             default_fg_color='#FFFFFF',
             highlightthickness=0
         )
         search_field.place(
-            x=76.0,
-            y=35.0,
+            x=66.0,
+            y=34.0,
             width=399.0,
             height=34.0
         )
@@ -360,10 +363,26 @@ class AppInterface(Tk):
             relief="flat"
         )
         search_button.place(
-            x=445.0,
-            y=40.0,
-            width=27.0,
-            height=27.0
+            x=440.0,
+            y=37.0,
+            width=29.0,
+            height=30.0
+        )
+
+        download_report_button_image = PhotoImage(
+            file=relative_to_assets("ti_donwload_report_buttom_img.png"))
+        download_report_button = Button(
+            image=download_report_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: self.report_generator.generate_report(search_field.get()),
+            relief="flat"
+        )
+        download_report_button.place(
+            x=778.0,
+            y=34.0,
+            width=223.0,
+            height=39.0
         )
 
         add_contract_image = PhotoImage(
@@ -376,7 +395,7 @@ class AppInterface(Tk):
             relief="flat"
         )
         add_contract_button.place(
-            x=991.0,
+            x=1001.0,
             y=34.0,
             width=223.0,
             height=39.0
@@ -649,14 +668,14 @@ class AppInterface(Tk):
         window.resizable(False, False)
         window.mainloop()
 
-    def insert_search_into_treeview(self, treeview, database, search):
+    def insert_search_into_treeview(self, treeview, database, search=''):
         global count
         count = 0
 
         treeview.tag_configure('oddrow', background='#0B74BC')
         treeview.tag_configure('evenrow', background='#2083C6')
 
-        if search == 'Insira o contratado ou CNPJ.':
+        if search == 'Insira o contratado ou CNPJ.' or not search:
             search = ''
         else:
             search = search

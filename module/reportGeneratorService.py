@@ -1,10 +1,12 @@
 from module.database import *
 import xlsxwriter
+from controller.pathSelectorController import *
+from tkinter import messagebox
 
-
-class ReportGenerator(SQLiteDatabase):
+class ReportGenerator():
     def __init__(self):
-        super().__init__()
+        self.database = SQLiteDatabase()
+        self.__connection = self.database.connection()
 
     def search_by_input(self, value):
         if Validations.validate_cnpj(value):
@@ -13,7 +15,7 @@ class ReportGenerator(SQLiteDatabase):
             return self.search_by_hired(value)
 
     def search_by_cnpj(self, cnpj):
-        cursor = self.__conexao.cursor()
+        cursor = self.__connection.cursor()
         cursor.execute(f'''
                             SELECT * FROM contratos
                                 WHERE cnpj == {cnpj}
@@ -21,17 +23,21 @@ class ReportGenerator(SQLiteDatabase):
                         ''')
         return cursor.fetchall()
 
-    def search_by_hired(self, hired):
-        cursor = self.__conexao.cursor()
+    def search_by_hired(self, hired=''):
+        if hired == 'Insira o contratado ou CNPJ.' or not hired:
+            hired = ''
+
+        cursor = self.__connection.cursor()
         cursor.execute(f'''
                     SELECT * FROM contratos
                         WHERE contratado LIKE '{hired}%'
                             ORDER BY id;
                 ''')
+        return cursor.fetchall()
 
     def model(self, path, search):
 
-        workbook = xlsxwriter.Workbook(path)
+        workbook = xlsxwriter.Workbook(f'{path}\\Controle de Contratos.xlsx')
         worksheet = workbook.add_worksheet()
 
         data = search
@@ -56,6 +62,8 @@ class ReportGenerator(SQLiteDatabase):
 
         workbook.close()
 
-    def generate_report(self, value, path):
+    def generate_report(self, value):
         data = self.search_by_input(value)
+        path = select_path()
         self.model(path, data)
+        messagebox.showinfo(title='Download Concluído', message='Relatório baixado com sucesso!')
