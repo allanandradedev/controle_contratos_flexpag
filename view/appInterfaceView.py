@@ -350,7 +350,7 @@ class AppInterface(Tk):
             self.on_double_click(event, tree=tree)
 
         def chama_right_click(event):
-            self.on_right_click(event, tree=tree)
+            self.right_click_menu(tree, event)
 
         tree.bind('<Button-3>', chama_right_click)
         tree.bind('<Double-1>', call_double_click)
@@ -817,14 +817,12 @@ class AppInterface(Tk):
         id = item['values'][0]
         self.attachment_service.get_attachment(id)
 
-    def on_right_click(self, event, tree):
-        selection = tree.selection()
-        item = tree.item(selection)
+    def right_click_menu(self, master, event):
+
+        selection = master.selection()
+        item = master.item(selection)
         id = item['values'][0]
 
-        self.right_click_menu(tree, event)
-
-    def right_click_menu(self, master, event):
         popup_menu = Menu(master, tearoff=False,
                           bg='#FFFFFF',
                           font=('Roboto', 11),
@@ -833,6 +831,155 @@ class AppInterface(Tk):
                           fg='#2B2B2B',
                           relief=FLAT)
         popup_menu.add_command(label='Editar Contrato', command='')
-        popup_menu.add_command(label='Renovar Contrato', command='')
+        popup_menu.add_command(label='Renovar Contrato', command=lambda: self.renovation_screen(id))
         popup_menu.tk_popup(event.x_root, event.y_root)
 
+    def renovation_screen(self, id):
+
+        global title_field_image
+        global entry_field_image
+        global observations_image
+        global renovate_button_image
+        global path_picker_img
+
+        window = Toplevel()
+
+        window.geometry("630x394")
+        window.configure(bg="#FFFFFF")
+
+        canvas = Canvas(
+            window,
+            bg="#FFFFFF",
+            height=394,
+            width=630,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+
+        canvas.place(x=0, y=0)
+        title_field_image = PhotoImage(
+            file=relative_to_assets("rs_title_field_image.png"))
+        canvas.create_image(
+            315.0,
+            61.0,
+            image=title_field_image
+        )
+
+        entry_field_image = PhotoImage(
+            file=relative_to_assets("rs_entry_field_img.png"))
+        canvas.create_image(
+            315.5,
+            118.5,
+            image=entry_field_image
+        )
+        end_date = PlaceHolderEntry(
+            master=window,
+            placeholder='*Nova data de vigência.',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        end_date.place(
+            x=69.0,
+            y=99.0,
+            width=493.0,
+            height=37.0
+        )
+
+        canvas.create_image(
+            314.5,
+            167.5,
+            image=entry_field_image
+        )
+
+        attachment_text = StringVar()
+        attachment_text.set('*Clique no ícone para escolher o arquivo.')
+
+        attachment = Entry(
+            master=window,
+            fg='gray',
+            bd=0,
+            bg="#EFEFEF",
+            textvariable=attachment_text,
+            font=('Roboto', 11),
+            state='disabled',
+            highlightthickness=0
+        )
+        attachment.place(
+            x=68.0,
+            y=148.0,
+            width=493.0,
+            height=37.0
+        )
+
+        path_picker_img = PhotoImage(file=ASSETS_PATH / "path_picker.png")
+
+        path_picker_button = Button(
+            master=window,
+            image=path_picker_img,
+            text='',
+            compound='center',
+            fg='white',
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: path_to_field(window, attachment_text),
+            relief='flat')
+
+        path_picker_button.place(
+            x=529.0, y=151.5,
+            width=30,
+            height=30)
+
+        observations_image = PhotoImage(
+            file=relative_to_assets("rs_observation_field_img.png"))
+        canvas.create_image(
+            315.5,
+            238.0,
+            image=observations_image
+        )
+
+        observations_field = PlaceHolderEntry(
+            master=window,
+            placeholder='Observações adicionais.',
+            bd=0,
+            bg="#EFEFEF",
+            highlightthickness=0
+        )
+        observations_field.place(
+            x=69.0,
+            y=197.0,
+            width=493.0,
+            height=80.0
+        )
+
+        renovate_button_image = PhotoImage(
+            file=relative_to_assets("rs_renovate_button_img.png"))
+        renovate_button = Button(
+            master=window,
+            image=renovate_button_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: self.renovate_command(window, id, end_date.get(), attachment.get()),
+            relief="flat"
+        )
+        renovate_button.place(
+            x=164.0,
+            y=295.0,
+            width=303.0,
+            height=59.01454162597656
+        )
+
+        window.resizable(False, False)
+        window.mainloop()
+
+    def renovate_command(self, master, id, new_end_date, path):
+        self.database.renovate_contract(id, new_end_date)
+        option = messagebox.askyesno(title='Informação Adicional', message='Deseja tornar a adição permanente?')
+        if option:
+            self.database.commit()
+            self.attachment_service.merge_to_attachment(id, path)
+            master.destroy()
+            self.focus_force()
+        else:
+            master.focus_force()

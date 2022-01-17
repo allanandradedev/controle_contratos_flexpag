@@ -184,6 +184,7 @@ class SQLiteDatabase:
                             id = {id};
                 ''')
 
+
     def delete_contract(self, id):
         self.__conexao.cursor().execute(f'''
                             DELETE FROM contratos
