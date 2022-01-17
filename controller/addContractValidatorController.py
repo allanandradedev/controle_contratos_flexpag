@@ -10,7 +10,7 @@ def add_contract_page_validations(hired_field,
                                   contract_description_field,
                                   start_date_field,
                                   end_date_field,
-                                  situation_field):
+                                  attachment_field):
     fields = [
         hired_field,
         cnpj_field,
@@ -19,7 +19,7 @@ def add_contract_page_validations(hired_field,
         contract_description_field,
         start_date_field,
         end_date_field,
-        situation_field
+        attachment_field
     ]
 
     placeholders_list = [
@@ -31,6 +31,7 @@ def add_contract_page_validations(hired_field,
         '*Início da Vigência.',
         '*Data de Vencimento.',
         '*Situação do Contrato.',
+        '*Clique no ícone para escolher o arquivo.'
     ]
 
     for field in fields:

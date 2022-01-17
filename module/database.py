@@ -1,6 +1,8 @@
 import sqlite3
-from module.validationService import *
+import string
 
+from module.validationService import *
+from utils.datesUtil import *
 
 class SQLiteDatabase:
     # -------------------- INITIALIZATION METHODS ------------------------------------------
@@ -53,6 +55,8 @@ class SQLiteDatabase:
 
     def search_by_input(self, value):
         if Validations.validate_cnpj(value):
+            if '.' in value:
+                value = ''.join([i for i in value if i not in string.punctuation])
             return self.search_by_cnpj(value)
         else:
             return self.search_by_hired(value)
@@ -62,7 +66,7 @@ class SQLiteDatabase:
         cursor.execute(f'''
             SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                 WHERE contratado LIKE '{hired}%'
-                    ORDER BY id;
+                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
         ''')
         return cursor.fetchall()
 
@@ -71,7 +75,7 @@ class SQLiteDatabase:
         cursor.execute(f'''
                     SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                         WHERE cnpj == {cnpj}
-                            ORDER BY id;
+                            ORDER BY strftime('%Y-%m-%d', data_vencimento);
                 ''')
         return cursor.fetchall()
 
@@ -87,17 +91,21 @@ class SQLiteDatabase:
                      descricao_contrato,
                      inicio_vigencia,
                      data_vencimento,
-                     situacao,
                      observacoes,
                      renovado='Não'):
+
+        if Validations.validate_dates(data_vencimento) < TODAY:
+            situacao = 'Vencido'
+        else:
+            situacao = 'Vigente'
 
         if observacoes == 'Observações adicionais.' or not observacoes:
             observacoes = None
 
         duracao_contrato = (abs(
                     Validations.validate_dates(inicio_vigencia) - Validations.validate_dates(data_vencimento)).days) + 1
-
-        self.__conexao.cursor().execute(f'''
+        cursor = self.__conexao.cursor()
+        cursor.execute(f'''
             INSERT INTO contratos(contratado,
                                   cnpj,
                                   tipo_contrato,
@@ -187,6 +195,13 @@ class SQLiteDatabase:
 
     def commit(self):
         self.__conexao.commit()
+
+    def get_last_id(self):
+        cursor = self.__conexao.cursor()
+        cursor.execute('SELECT last_insert_rowid()')
+        id = cursor.fetchall()
+        id = id[0][0]
+        return id
 
 if __name__ == '__main__':
     banco = SQLiteDatabase()

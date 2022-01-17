@@ -1,7 +1,7 @@
 import datetime
 from datetime import timedelta
 
-TODAY = datetime.datetime.today().strftime('%d/%m/%Y')
+TODAY = datetime.datetime.today()
 TODAY_WITH_HIFEN = datetime.datetime.today().strftime('%d-%m-%Y')
 TODAY_WITH_DOT = datetime.datetime.today().strftime('%d.%m.%Y')
 YERSTERDAY = datetime.datetime.today() - timedelta(days=1)

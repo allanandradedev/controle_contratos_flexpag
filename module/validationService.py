@@ -16,3 +16,4 @@ class Validations:
     @staticmethod
     def validate_dates(date):
         return dt.datetime.strptime(date,'%d/%m/%Y')
+

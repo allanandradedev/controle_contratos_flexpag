@@ -33,7 +33,6 @@ def login_page_validations(login_field, password_field):
         return 404
     else:
         if login_info[login_field.get()] == USERS_LIST[login_field.get()]:
-            messagebox.showinfo(title='Sucess', message=f'Bem vindo {login_field.get()}')
             return 200
         else:
             messagebox.showinfo(title='Wrong Password', message='Senha Incorreta.')

@@ -1,3 +1,4 @@
+import tkinter.tix
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage, Label, ttk
 from controller.loginValidatorController import *
@@ -38,6 +39,10 @@ class AppInterface(Tk):
         global enter_button_image
         global woman_image_path
         global login_image_path
+
+        def confirm(event=None):
+            self.validate_login(login_field, password_field)
+
 
         self.canvas = Canvas(
             self,
@@ -209,6 +214,7 @@ class AppInterface(Tk):
             width=344.0,
             height=67.0
         )
+        self.bind('<Return>', confirm)
 
     def ui_screen(self):
 
@@ -218,6 +224,9 @@ class AppInterface(Tk):
         global search_button_image
         global treeview_field_image
         global download_report_button_image
+
+        def confirm(event=None):
+            self.insert_search_into_treeview(tree, self.database, search_field.get())
 
         self.canvas = Canvas(
             self,
@@ -313,8 +322,7 @@ class AppInterface(Tk):
                        {'sticky': 'nswe'})])
 
         style.map("Treeview",
-                  background=[('selected', '#2285CA')])
-
+                  background=[('selected', '#56AFEC')])
 
         # ---------------------------------------------------------
 
@@ -332,16 +340,20 @@ class AppInterface(Tk):
         treeview_scrollbar.pack(side=RIGHT, fill=Y)
 
         tree = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings',
-                          yscrollcommand=treeview_scrollbar.set)
+                            yscrollcommand=treeview_scrollbar.set)
         tree.place(
             width=1208.0 - 40,
             height=600.0
         )
 
-        def chama_double_click(event):
-            self.OnDoubleClick(event, tree=tree)
+        def call_double_click(event):
+            self.on_double_click(event, tree=tree)
 
-        tree.bind('<Double-1>', chama_double_click)
+        def chama_right_click(event):
+            self.on_right_click(event, tree=tree)
+
+        tree.bind('<Button-3>', chama_right_click)
+        tree.bind('<Double-1>', call_double_click)
         treeview_scrollbar.config(command=tree.yview)
 
         tree.heading(1, text='Id')
@@ -409,6 +421,8 @@ class AppInterface(Tk):
         )
 
         self.insert_search_into_treeview(tree, self.database, search_field.get())
+
+        self.bind('<Return>', confirm)
 
     def add_contract_page(self):
 
@@ -609,20 +623,44 @@ class AppInterface(Tk):
             411.5,
             image=entry_field_image
         )
-        situation = PlaceHolderEntry(
+
+        attachment_text = StringVar()
+        attachment_text.set('*Clique no ícone para escolher o arquivo.')
+
+        attachment = Entry(
             master=window,
-            placeholder='*Situação do Contrato.',
-            default_fg_color='#2B2B2B',
+            fg='gray',
             bd=0,
             bg="#EFEFEF",
+            textvariable=attachment_text,
+            font=('Roboto', 11),
+            state='disabled',
             highlightthickness=0
         )
-        situation.place(
+        attachment.place(
             x=62.0,
             y=392.0,
             width=493.0,
             height=37.0
         )
+
+        path_picker_img = PhotoImage(file=ASSETS_PATH / "path_picker.png")
+
+        path_picker_button = Button(
+            master=window,
+            image=path_picker_img,
+            text='',
+            compound='center',
+            fg='white',
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: path_to_field(window, attachment_text),
+            relief='flat')
+
+        path_picker_button.place(
+            x=526.0, y=395.5,
+            width=30,
+            height=30)
 
         observations_image = PhotoImage(
             file=relative_to_assets("ac_observations_image.png"))
@@ -662,7 +700,7 @@ class AppInterface(Tk):
                                                             contract_description.get(),
                                                             initial_date_entry.get(),
                                                             end_date_entry.get(),
-                                                            situation.get(),
+                                                            attachment.get(),
                                                             observations.get()),
             relief="flat"
         )
@@ -692,6 +730,8 @@ class AppInterface(Tk):
         treeview.delete(*treeview.get_children())
 
         for i in rows:
+            i = list(i)
+            i[2] = Validations.validate_cnpj(i[2])
             if count % 2 == 0:
                 treeview.insert('', 'end', values=i, tags='evenrow')
             else:
@@ -711,9 +751,15 @@ class AppInterface(Tk):
                                    contract_description_field,
                                    start_date_field,
                                    end_date_field,
-                                   situation_field,
+                                   attachment_field,
                                    observation_field
                                    ):
+
+        hired_field = hired_field.title()
+        contract_type_field = contract_type_field.title()
+        manager_area_field = manager_area_field.title()
+        observation_field = observation_field.lower()
+        contract_description_field = contract_description_field.title()
 
         if add_contract_page_validations(hired_field,
                                          cnpj_field,
@@ -722,7 +768,7 @@ class AppInterface(Tk):
                                          contract_description_field,
                                          start_date_field,
                                          end_date_field,
-                                         situation_field) and Validations.validate_cnpj(cnpj_field):
+                                         attachment_field) and Validations.validate_cnpj(cnpj_field):
 
             option = messagebox.askyesno(title='Informação Adicional', message='Deseja tornar a adição permanente?')
 
@@ -734,9 +780,9 @@ class AppInterface(Tk):
                                            contract_description_field,
                                            start_date_field,
                                            end_date_field,
-                                           situation_field,
                                            observation_field)
                 self.database.commit()
+                self.attachment_service.attach_to_contract(attachment_field,self.database.get_last_id())
                 master.destroy()
                 self.canvas.focus_force()
             if not option:
@@ -749,7 +795,7 @@ class AppInterface(Tk):
                                            contract_description_field,
                                            start_date_field,
                                            end_date_field,
-                                           situation_field) == 500:
+                                           attachment_field) == 500:
             messagebox.showinfo(title='Campos Vazios', message='Preencha todos os campos obrigatórios para continuar')
             master.focus_force()
         else:
@@ -765,8 +811,28 @@ class AppInterface(Tk):
             case _:
                 pass
 
-    def OnDoubleClick(self, event, tree):
+    def on_double_click(self, event, tree):
         selection = tree.selection()
         item = tree.item(selection)
-        item = item['values'][0]
-        self.attachment_service.get_attachment(item)
+        id = item['values'][0]
+        self.attachment_service.get_attachment(id)
+
+    def on_right_click(self, event, tree):
+        selection = tree.selection()
+        item = tree.item(selection)
+        id = item['values'][0]
+
+        self.right_click_menu(tree, event)
+
+    def right_click_menu(self, master, event):
+        popup_menu = Menu(master, tearoff=False,
+                          bg='#FFFFFF',
+                          font=('Roboto', 11),
+                          bd=0,
+                          activeborderwidth=0,
+                          fg='#2B2B2B',
+                          relief=FLAT)
+        popup_menu.add_command(label='Editar Contrato', command='')
+        popup_menu.add_command(label='Renovar Contrato', command='')
+        popup_menu.tk_popup(event.x_root, event.y_root)
+

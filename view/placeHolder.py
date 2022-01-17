@@ -3,13 +3,13 @@ from tkinter import *
 
 class PlaceHolderEntry(Entry):
     def __init__(self, master=None, placeholder = 'PLACEHOLDER', color='gray', bd=None, type= None, bg=None,
-                 highlightthickness=None, default_fg_color = None, font: tuple = ('Roboto', 11)):
+                 highlightthickness=None, default_fg_color = None, font: tuple = ('Roboto', 11), state=None):
         super().__init__(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
         self.default_fg_color = default_fg_color
-
+        self['state'] = state
         self.bind('<FocusIn>', self.foc_in)
         self.bind('<FocusOut>', self.foc_out)
         self['font'] = font
