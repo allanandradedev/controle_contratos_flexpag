@@ -3,6 +3,7 @@ import xlsxwriter
 from controller.pathSelectorController import *
 from tkinter import messagebox
 
+
 class ReportGenerator():
     def __init__(self):
         self.database = SQLiteDatabase()

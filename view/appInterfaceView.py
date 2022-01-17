@@ -6,6 +6,7 @@ from view.placeHolder import *
 from module.database import *
 from controller.addContractValidatorController import *
 from module.reportGeneratorService import *
+from module.attachmentService import *
 
 OUTPUT_PATH = Path(__file__).parent.parent
 ASSETS_PATH = OUTPUT_PATH
@@ -26,6 +27,7 @@ class AppInterface(Tk):
         self.resizable(False, False)
         self.database = SQLiteDatabase()
         self.report_generator = ReportGenerator()
+        self.attachment_service = AttachmentManagerService()
 
     def login_page(self):
 
@@ -313,6 +315,7 @@ class AppInterface(Tk):
         style.map("Treeview",
                   background=[('selected', '#2285CA')])
 
+
         # ---------------------------------------------------------
 
         # ------- Treeview Frame Settings -------------------------
@@ -328,27 +331,31 @@ class AppInterface(Tk):
         treeview_scrollbar = ttk.Scrollbar(treeview_frame, orient=VERTICAL)
         treeview_scrollbar.pack(side=RIGHT, fill=Y)
 
-        tv = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings',
+        tree = ttk.Treeview(treeview_frame, columns=(1, 2, 3, 4, 5, 6), height='7', show='headings',
                           yscrollcommand=treeview_scrollbar.set)
-        tv.place(
+        tree.place(
             width=1208.0 - 40,
             height=600.0
         )
 
-        treeview_scrollbar.config(command=tv.yview)
+        def chama_double_click(event):
+            self.OnDoubleClick(event, tree=tree)
 
-        tv.heading(1, text='Id')
-        tv.heading(2, text='Contratado')
-        tv.heading(3, text='CNPJ')
-        tv.heading(4, text='Inicio Vigência')
-        tv.heading(5, text='Data Vencimento')
-        tv.heading(6, text='Situação')
+        tree.bind('<Double-1>', chama_double_click)
+        treeview_scrollbar.config(command=tree.yview)
 
-        tv.column(1, anchor='center')
-        tv.column(3, anchor='center')
-        tv.column(4, anchor='center')
-        tv.column(5, anchor='center')
-        tv.column(6, anchor='center')
+        tree.heading(1, text='Id')
+        tree.heading(2, text='Contratado')
+        tree.heading(3, text='CNPJ')
+        tree.heading(4, text='Inicio Vigência')
+        tree.heading(5, text='Data Vencimento')
+        tree.heading(6, text='Situação')
+
+        tree.column(1, anchor='center')
+        tree.column(3, anchor='center')
+        tree.column(4, anchor='center')
+        tree.column(5, anchor='center')
+        tree.column(6, anchor='center')
 
         # ------------------------------------------------------------------------
 
@@ -359,7 +366,7 @@ class AppInterface(Tk):
             borderwidth=0,
             bg=None,
             highlightthickness=0,
-            command=lambda: self.insert_search_into_treeview(tv, self.database, search_field.get()),
+            command=lambda: self.insert_search_into_treeview(tree, self.database, search_field.get()),
             relief="flat"
         )
         search_button.place(
@@ -401,7 +408,7 @@ class AppInterface(Tk):
             height=39.0
         )
 
-        self.insert_search_into_treeview(tv, self.database, search_field.get())
+        self.insert_search_into_treeview(tree, self.database, search_field.get())
 
     def add_contract_page(self):
 
@@ -757,3 +764,9 @@ class AppInterface(Tk):
                 self.switch_window()
             case _:
                 pass
+
+    def OnDoubleClick(self, event, tree):
+        selection = tree.selection()
+        item = tree.item(selection)
+        item = item['values'][0]
+        self.attachment_service.get_attachment(item)

@@ -7,8 +7,8 @@ class AttachmentManagerService:
         pass
 
     def attach_to_contract(self, path, id):
-        destination = f'{id}.pdf'
+        destination = f'contracts\\{id}.pdf'
         shutil.copy(path, destination)
 
     def get_attachment(self, id):
-        subprocess.Popen(f'{id}.pdf', shell=True)
+        subprocess.Popen(f'contracts\\{id}.pdf', shell=True)
