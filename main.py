@@ -1,4 +1,3 @@
-from view.appInterfaceView import *
+from views.janelaBase import *
 
-app = AppInterface()
-app.mainloop()
+JanelaBase().mainloop()
