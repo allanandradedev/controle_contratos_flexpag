@@ -26,7 +26,7 @@ class JanelaAddContrato:
 
         self.window.geometry(f"615x636+{x_position}+{y_position}")
         self.window.configure(bg="#FFFFFF")
-        self.window.iconbitmap('assets\icone_flexpag.ico')
+        self.window.iconbitmap('assets\\icone_flexpag.ico')
         self.window.title('Adicionar Contrato.')
         self.canvas = Canvas(
             self.window,
@@ -321,7 +321,7 @@ class JanelaAddContrato:
                           data_final,
                           anexo,
                           observacoes):
-        confirmação = ConfirmaNovoContrato(contratado,
+        confirmacao = ConfirmaNovoContrato(contratado,
                                            cnpj,
                                            tipo_contrato,
                                            area_gestora,
@@ -330,7 +330,7 @@ class JanelaAddContrato:
                                            data_final,
                                            anexo,
                                            observacoes).confirmar_inputs()
-        match confirmação:
+        match confirmacao:
             case 200:
                 self.window.destroy()
                 self.master.focus_force()
