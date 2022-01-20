@@ -26,6 +26,7 @@ class JanelaAddContrato:
 
         self.window.geometry(f"615x636+{x_position}+{y_position}")
         self.window.configure(bg="#FFFFFF")
+        self.window.iconbitmap('assets\icone_flexpag.ico')
         self.window.title('Adicionar Contrato.')
         self.canvas = Canvas(
             self.window,
@@ -333,5 +334,5 @@ class JanelaAddContrato:
             case 200:
                 self.window.destroy()
                 self.master.focus_force()
-            case 500:
+            case _:
                 self.window.focus_force()

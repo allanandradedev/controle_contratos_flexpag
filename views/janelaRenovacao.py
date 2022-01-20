@@ -30,6 +30,7 @@ class JanelaRenovacao:
 
         self.window.geometry(f"630x394+{x_position}+{y_position}")
         self.window.configure(bg="#FFFFFF")
+        self.window.iconbitmap('assets\icone_flexpag.ico')
         self.window.title('Renovar Contrato')
 
         canvas = Canvas(
