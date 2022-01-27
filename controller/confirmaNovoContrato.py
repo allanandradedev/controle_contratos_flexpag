@@ -72,6 +72,13 @@ class ConfirmaNovoContrato:
         self.observacoes = self.observacoes.title()
         self.renovado = self.renovado.title()
 
+    def formatar_datas(self, data) -> str:
+        dia = data[:2]
+        mes = data[3:5]
+        ano = data[6:]
+        data = '-'.join([ano, mes, dia])
+        return data
+
     @staticmethod
     def retorna_duracao_contrato(inicio_vigencia: str, data_vencimento: str) -> int:
         data_inicio = datetime.strptime(inicio_vigencia, '%d/%m/%Y')
@@ -105,8 +112,8 @@ class ConfirmaNovoContrato:
                                          self.tipo_contrato,
                                          self.area_gestora,
                                          self.descricao_contrato,
-                                         self.inicio_vigencia,
-                                         self.data_vencimento,
+                                         self.formatar_datas(self.inicio_vigencia),
+                                         self.formatar_datas(self.data_vencimento),
                                          duracao,
                                          situacao,
                                          self.observacoes,

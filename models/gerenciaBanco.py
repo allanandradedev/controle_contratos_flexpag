@@ -55,29 +55,22 @@ class BancoDeDados:
 
         self.commit()
 
-    # Realiza uma pesquisa de todos os dados da tabela contratos
-    def atualizar_lista(self) -> list:
-        self.cursor.execute(f'''
-            SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
-                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
-        ''')
-        return self.cursor.fetchall()
-
     # Realiza uma pesquisa na tabela contratos utilizando o contratado como parâmetro
     def pesquisar_por_contratado(self, contratado: str) -> list:
         self.cursor.execute(f'''
             SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                 WHERE contratado LIKE '{contratado}%'
-                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
+                    ORDER BY strftime('%s',data_vencimento);
         ''')
         return self.cursor.fetchall()
 
     # Realiza uma pesquisa na tabela contratos utilizando o CNPJ como parâmetro
     def pesquisar_por_cnpj(self, cnpj: str) -> list:
+
         self.cursor.execute(f'''
                             SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
                                 WHERE cnpj == {cnpj}
-                                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
+                                    ORDER BY strftime('%s',data_vencimento);
                         ''')
         return self.cursor.fetchall()
 
@@ -85,8 +78,7 @@ class BancoDeDados:
     def relatorio_por_cnpj(self, cnpj: str) -> list:
         self.cursor.execute(f'''
                             SELECT * FROM contratos
-                                WHERE cnpj == {cnpj}
-                                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
+                                WHERE cnpj == {cnpj};
                         ''')
         return self.cursor.fetchall()
 
@@ -94,8 +86,7 @@ class BancoDeDados:
     def pesquisar_por_id(self, id_contrato: int) -> list:
         self.cursor.execute(f'''
                                     SELECT * FROM contratos
-                                        WHERE id == {id_contrato}
-                                            ORDER BY strftime('%Y-%m-%d', data_vencimento);
+                                        WHERE id == {id_contrato};
                                 ''')
         return self.cursor.fetchall()
 
@@ -103,8 +94,7 @@ class BancoDeDados:
     def relatorio_por_contratado(self, contratado: str) -> list:
         self.cursor.execute(f'''
                             SELECT * FROM contratos
-                                WHERE contratado LIKE '{contratado}%'
-                                    ORDER BY strftime('%Y-%m-%d', data_vencimento);
+                                WHERE contratado LIKE '{contratado}%';
                         ''')
         return self.cursor.fetchall()
 

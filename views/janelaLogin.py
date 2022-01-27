@@ -1,4 +1,5 @@
-from tkinter import messagebox, Canvas, PhotoImage, Label, Button, StringVar, Entry
+from tkinter import messagebox, Canvas, PhotoImage, Label, Button, StringVar
+
 from views.placeholderEntry import PlaceHolder
 from controller.confirmaLogin import ConfirmaLogin
 from views.janelaInicio import JanelaInicial
