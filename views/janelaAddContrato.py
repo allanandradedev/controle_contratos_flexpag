@@ -94,7 +94,7 @@ class JanelaAddContrato:
         )
         cnpj_entry = PlaceHolder(
             self.canvas,
-            placeholder='Insira o CNPJ sem as pontuações.',
+            placeholder='Insira um CNPJ válido.',
             default_fg_color='#2B2B2B',
             color='gray',
             bd=0,

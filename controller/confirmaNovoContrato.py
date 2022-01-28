@@ -3,6 +3,7 @@ from models.gerenciaBanco import BancoDeDados
 from models.gerenciaAnexos import GerenciadorDeAnexos
 from datetime import datetime
 from tkinter import messagebox
+import re
 
 from controller.formatacoesIO import FormatacoesIO
 
@@ -21,7 +22,7 @@ class ConfirmaNovoContrato:
                  renovado: str = 'Não'
                  ):
         self.contratado = contratado
-        self.cnpj = cnpj
+        self.cnpj = re.sub('[^A-Za-z0-9]+', '', cnpj)
         self.tipo_contrato = tipo_contrato
         self.area_gestora = area_gestora
         self.descricao_contrato = descricao_contrato
@@ -48,7 +49,7 @@ class ConfirmaNovoContrato:
 
         placeholders = [
             '*Nome do Contratado.',
-            '*Insira o CNPJ sem as pontuações.',
+            '*Insira um CNPJ válido.',
             '*Tipo de Contrato.',
             '*Área Gestora.',
             '*Descrição do Contrato.',
