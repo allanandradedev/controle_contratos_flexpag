@@ -22,10 +22,8 @@ class ConfirmaPesquisa:
     def pesquisar(self, pesquisa: str) -> list:
         pesquisa = self.confirmar_preenchimento(pesquisa)
         if ValidadorDeCNPJ.valida_cnpj(pesquisa):
-            print(self.banco.pesquisar_por_cnpj(pesquisa))
             return self.banco.pesquisar_por_cnpj(pesquisa)
         else:
-            print(self.banco.pesquisar_por_contratado(pesquisa))
             return self.banco.pesquisar_por_contratado(pesquisa)
 
     def pesquisa_completa(self, pesquisa: str) -> list:
