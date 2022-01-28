@@ -4,6 +4,8 @@ from models.gerenciaAnexos import GerenciadorDeAnexos
 from datetime import datetime
 from tkinter import messagebox
 
+from controller.formatacoesIO import FormatacoesIO
+
 
 class ConfirmaNovoContrato:
     def __init__(self,
@@ -23,8 +25,8 @@ class ConfirmaNovoContrato:
         self.tipo_contrato = tipo_contrato
         self.area_gestora = area_gestora
         self.descricao_contrato = descricao_contrato
-        self.inicio_vigencia = inicio_vigencia
-        self.data_vencimento = data_vencimento
+        self.inicio_vigencia = FormatacoesIO.formata_data_input(inicio_vigencia)
+        self.data_vencimento = FormatacoesIO.formata_data_input(data_vencimento)
         self.anexo = anexo
         self.observacoes = observacoes
         self.renovado = renovado
@@ -72,23 +74,22 @@ class ConfirmaNovoContrato:
         self.observacoes = self.observacoes.title()
         self.renovado = self.renovado.title()
 
-    def formatar_datas(self, data) -> str:
-        dia = data[:2]
-        mes = data[3:5]
-        ano = data[6:]
-        data = '-'.join([ano, mes, dia])
-        return data
+    def verifica_datas(self) -> int:
+        if datetime.strptime(self.inicio_vigencia, '%Y-%m-%d') >= datetime.strptime(self.data_vencimento, '%Y-%m-%d'):
+            return 500
+        else:
+            return 200
 
     @staticmethod
     def retorna_duracao_contrato(inicio_vigencia: str, data_vencimento: str) -> int:
-        data_inicio = datetime.strptime(inicio_vigencia, '%d/%m/%Y')
-        data_fim = datetime.strptime(data_vencimento, '%d/%m/%Y')
+        data_inicio = datetime.strptime(inicio_vigencia, '%Y-%m-%d')
+        data_fim = datetime.strptime(data_vencimento, '%Y-%m-%d')
         duracao = abs(data_inicio - data_fim).days + 1
         return duracao
 
     @staticmethod
     def retorna_situacao_contrato(data_vencimento: str) -> str:
-        data_fim = datetime.strptime(data_vencimento, '%d/%m/%Y')
+        data_fim = datetime.strptime(data_vencimento, '%Y-%m-%d')
 
         if data_fim < datetime.today():
             situacao = 'Vencido'
@@ -99,6 +100,9 @@ class ConfirmaNovoContrato:
     def confirmar_inputs(self) -> int:
         if self.verificar_preenchimento() == 500:
             messagebox.showinfo('Campos Vazios', 'Preencha todos os campos corretamente para continuar.')
+        elif self.verifica_datas() == 500:
+            messagebox.showinfo('Preenchimento incorreto', 'A data de início da vigência é igual ou superior a data de'
+                                                           ' vencimento do contrato, verifique e tente novamente.')
         elif self.verificar_preenchimento() == 404:
             messagebox.showinfo(title='CNPJ Inválido', message='Verifique o CNPJ e tente novamente.')
         else:
@@ -112,8 +116,8 @@ class ConfirmaNovoContrato:
                                          self.tipo_contrato,
                                          self.area_gestora,
                                          self.descricao_contrato,
-                                         self.formatar_datas(self.inicio_vigencia),
-                                         self.formatar_datas(self.data_vencimento),
+                                         self.inicio_vigencia,
+                                         self.data_vencimento,
                                          duracao,
                                          situacao,
                                          self.observacoes,
@@ -123,4 +127,3 @@ class ConfirmaNovoContrato:
                 return 200
             else:
                 return 500
-

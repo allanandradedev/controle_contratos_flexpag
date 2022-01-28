@@ -6,7 +6,7 @@ from views.placeholderEntry import PlaceHolder
 from controller.mascaraCnpj import MascaraCNPJ
 from controller.abreContrato import AbreAnexos
 from views.popupBotaoDireito import PopUpMenu
-from controller.mascaraDatas import MascaraDatas
+from controller.formatacoesIO import FormatacoesIO
 
 global upper_field_image
 global search_field_image
@@ -235,8 +235,8 @@ class JanelaInicial:
 
             linha = list(linha)
             linha[2] = MascaraCNPJ.mascarar(linha[2])
-            linha[3] = MascaraDatas.mascarar_datas(linha[3])
-            linha[4] = MascaraDatas.mascarar_datas(linha[4])
+            linha[3] = FormatacoesIO.formata_data_output(linha[3])
+            linha[4] = FormatacoesIO.formata_data_output(linha[4])
 
             if contador % 2 == 0:
                 tabela.insert('', 'end', values=linha, tags='par')

@@ -174,14 +174,12 @@ class JanelaRenovacao:
 
         for campo in campos:
             if not campo or campo in placeholders:
-                messagebox.showinfo('Campos Vazios', 'Preencha todos os campos e tente novamente.')
-                break
+                messagebox.showerror('Campos Vazios', 'Preencha todos os campos e tente novamente.')
+                return self.window.focus_force()
             else:
                 pass
 
-        opcao = messagebox.askyesno('Tem certeza', 'Deseja tornar a alteração permanente?')
-        if opcao:
-            RenovaContrato().renovar(id_contrato, data_vencimento, anexo)
+        if RenovaContrato().renovar(id_contrato, data_vencimento, anexo) == 200:
             messagebox.showinfo('Sucesso', 'Contrato renovado.')
             self.window.destroy()
             self.master.focus_force()

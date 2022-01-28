@@ -78,7 +78,8 @@ class BancoDeDados:
     def relatorio_por_cnpj(self, cnpj: str) -> list:
         self.cursor.execute(f'''
                             SELECT * FROM contratos
-                                WHERE cnpj == {cnpj};
+                                WHERE cnpj == {cnpj}
+                                    ORDER BY strftime('%s',data_vencimento);
                         ''')
         return self.cursor.fetchall()
 
@@ -86,7 +87,8 @@ class BancoDeDados:
     def pesquisar_por_id(self, id_contrato: int) -> list:
         self.cursor.execute(f'''
                                     SELECT * FROM contratos
-                                        WHERE id == {id_contrato};
+                                        WHERE id == {id_contrato}
+                                            ORDER BY strftime('%s',data_vencimento);
                                 ''')
         return self.cursor.fetchall()
 
@@ -94,7 +96,8 @@ class BancoDeDados:
     def relatorio_por_contratado(self, contratado: str) -> list:
         self.cursor.execute(f'''
                             SELECT * FROM contratos
-                                WHERE contratado LIKE '{contratado}%';
+                                WHERE contratado LIKE '{contratado}%'
+                                    ORDER BY strftime('%s',data_vencimento);;
                         ''')
         return self.cursor.fetchall()
 
