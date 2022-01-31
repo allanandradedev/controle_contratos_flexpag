@@ -1,7 +1,7 @@
 from models.validaCNPJ import ValidadorDeCNPJ
 from models.gerenciaBanco import BancoDeDados
 from models.gerenciaAnexos import GerenciadorDeAnexos
-from datetime import datetime
+from datetime import datetime, timedelta
 from tkinter import messagebox
 import re
 
@@ -91,11 +91,17 @@ class ConfirmaNovoContrato:
     @staticmethod
     def retorna_situacao_contrato(data_vencimento: str) -> str:
         data_fim = datetime.strptime(data_vencimento, '%Y-%m-%d')
+        dias_para_vencer = data_fim - datetime.today()
 
         if data_fim < datetime.today():
             situacao = 'Vencido'
+
+        elif abs(dias_para_vencer.days) < 30:
+            situacao = 'À Vencer'
+
         else:
             situacao = 'Vigente'
+
         return situacao
 
     def confirmar_inputs(self) -> int:

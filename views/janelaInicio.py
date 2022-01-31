@@ -14,7 +14,7 @@ global add_contract_image
 global search_button_image
 global treeview_field_image
 global download_report_button_image
-
+global refresh_icon_button_image
 
 class JanelaInicial:
 
@@ -26,6 +26,7 @@ class JanelaInicial:
         global search_button_image
         global treeview_field_image
         global download_report_button_image
+        global refresh_icon_button_image
 
         self.master = master
 
@@ -146,7 +147,7 @@ class JanelaInicial:
         tree.heading(1, text='Id')
         tree.heading(2, text='Contratado')
         tree.heading(3, text='CNPJ')
-        tree.heading(4, text='Inicio Vigência')
+        tree.heading(4, text='Tipo Contrato')
         tree.heading(5, text='Data Vencimento')
         tree.heading(6, text='Situação')
 
@@ -207,6 +208,24 @@ class JanelaInicial:
             height=39.0
         )
 
+        refresh_icon_button_image = PhotoImage(
+            file="assets\\ti_refresh_button_img.png"
+        )
+        refresh_button = Button(
+            image=refresh_icon_button_image,
+            borderwidth=0,
+            bg=None,
+            highlightthickness=0,
+            command=lambda: self.refresh(tree, search_field),
+            relief="flat"
+        )
+        refresh_button.place(
+            x=500.0,
+            y=37.0,
+            width=29.0,
+            height=30.0
+        )
+
         def chama_pesquisa(e):
             self.inserir_pesquisa_na_tabela(tree, search_field.get())
 
@@ -243,6 +262,10 @@ class JanelaInicial:
             else:
                 tabela.insert('', 'end', values=linha, tags='impar')
             contador += 1
+
+    def refresh(self, tree, campo_pesquisa):
+        self.inserir_pesquisa_na_tabela(tree, '')
+        campo_pesquisa.delete('0', 'end')
 
     def gera_relatorios(self, pesquisa: str) -> None:
         ChamaGeraRelatorios.gerar_relatorio(pesquisa)

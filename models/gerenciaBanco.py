@@ -58,7 +58,7 @@ class BancoDeDados:
     # Realiza uma pesquisa na tabela contratos utilizando o contratado como parâmetro
     def pesquisar_por_contratado(self, contratado: str) -> list:
         self.cursor.execute(f'''
-            SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
+            SELECT id, contratado, cnpj, tipo_contrato, data_vencimento, situacao FROM contratos
                 WHERE contratado LIKE '{contratado}%'
                     ORDER BY strftime('%s',data_vencimento);
         ''')
@@ -68,7 +68,7 @@ class BancoDeDados:
     def pesquisar_por_cnpj(self, cnpj: str) -> list:
 
         self.cursor.execute(f'''
-                            SELECT id, contratado, cnpj, inicio_vigencia, data_vencimento, situacao FROM contratos
+                            SELECT id, contratado, cnpj, tipo_contrato, data_vencimento, situacao FROM contratos
                                 WHERE cnpj == {cnpj}
                                     ORDER BY strftime('%s',data_vencimento);
                         ''')
@@ -97,7 +97,7 @@ class BancoDeDados:
         self.cursor.execute(f'''
                             SELECT * FROM contratos
                                 WHERE contratado LIKE '{contratado}%'
-                                    ORDER BY strftime('%s',data_vencimento);;
+                                    ORDER BY strftime('%s',data_vencimento);
                         ''')
         return self.cursor.fetchall()
 
