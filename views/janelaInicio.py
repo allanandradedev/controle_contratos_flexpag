@@ -159,8 +159,6 @@ class JanelaInicial:
         tree.column(5, anchor='center')
         tree.column(6, anchor='center')
 
-
-
         search_button_image = PhotoImage(
             file="assets\\ti_search_button_img.png")
         search_button = Button(
@@ -294,6 +292,7 @@ class JanelaInicial:
         id_contrato = self.retorna_id_da_tree(tree)
         PopUpMenu(master, event, id_contrato)
 
-    def aviso_contratos_a_vencer(self):
+    @staticmethod
+    def aviso_contratos_a_vencer():
         contratos = ContratosVencendo().contratos_a_vencer()
         messagebox.showwarning('Atenção', f'{contratos}')
