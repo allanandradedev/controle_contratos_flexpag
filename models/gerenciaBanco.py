@@ -101,6 +101,14 @@ class BancoDeDados:
                         ''')
         return self.cursor.fetchall()
 
+    def pesquisar_por_data(self) -> list:
+        self.cursor.execute(f'''
+            SELECT * FROM contratos
+                WHERE data_vencimento
+                    BETWEEN DATE('now') AND DATE('now', '+30 Day');
+                            ''')
+        return self.cursor.fetchall()
+
     # Realiza a inserção de um novo registro na tabela contratos.
     def novo_contrato(self,
                       contratado: str,

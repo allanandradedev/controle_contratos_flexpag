@@ -7,6 +7,7 @@ from controller.mascaraCnpj import MascaraCNPJ
 from controller.abreContrato import AbreAnexos
 from views.popupBotaoDireito import PopUpMenu
 from controller.formatacoesIO import FormatacoesIO
+from controller.chamaContratosaVencer import ContratosVencendo
 
 global upper_field_image
 global search_field_image
@@ -15,6 +16,7 @@ global search_button_image
 global treeview_field_image
 global download_report_button_image
 global refresh_icon_button_image
+
 
 class JanelaInicial:
 
@@ -157,7 +159,7 @@ class JanelaInicial:
         tree.column(5, anchor='center')
         tree.column(6, anchor='center')
 
-        self.inserir_pesquisa_na_tabela(tree, '')
+
 
         search_button_image = PhotoImage(
             file="assets\\ti_search_button_img.png")
@@ -226,6 +228,9 @@ class JanelaInicial:
             height=30.0
         )
 
+        self.inserir_pesquisa_na_tabela(tree, '')
+        self.aviso_contratos_a_vencer()
+
         def chama_pesquisa(e):
             self.inserir_pesquisa_na_tabela(tree, search_field.get())
 
@@ -266,6 +271,8 @@ class JanelaInicial:
     def refresh(self, tree, campo_pesquisa):
         self.inserir_pesquisa_na_tabela(tree, '')
         campo_pesquisa.delete('0', 'end')
+        campo_pesquisa.insert('0', campo_pesquisa.placeholder)
+        self.master.focus_set()
 
     def gera_relatorios(self, pesquisa: str) -> None:
         ChamaGeraRelatorios.gerar_relatorio(pesquisa)
@@ -286,3 +293,7 @@ class JanelaInicial:
     def abrir_menu_botao_direito(self, master, tree,  event) -> None:
         id_contrato = self.retorna_id_da_tree(tree)
         PopUpMenu(master, event, id_contrato)
+
+    def aviso_contratos_a_vencer(self):
+        contratos = ContratosVencendo().contratos_a_vencer()
+        messagebox.showwarning('Atenção', f'{contratos}')
