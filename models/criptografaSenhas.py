@@ -1,17 +1,13 @@
-from base64 import b64encode, b64decode
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Criptografia:
     # Criptografa a entrada da senha.
     @staticmethod
-    def criptografa_senha(senha: str) -> bytes:
-        senha = senha.encode("utf-8")
-        senha_criptografada = b64encode(senha)
+    def criptografa_senha(senha: str) -> str:
+        senha_criptografada = generate_password_hash(senha)
         return senha_criptografada
 
-    # Descriptografa a entrada da senha.
-    @staticmethod
-    def descriptografa_senha(senha: bytes) -> str:
-        senha_descriptografada = b64decode(senha)
-        senha = senha_descriptografada.decode("utf-8")
-        return senha
+    def checa_senha(self, senha_hash: str, senha) -> bool:
+        confirmacao = check_password_hash(senha_hash, senha)
+        return confirmacao

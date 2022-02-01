@@ -45,13 +45,14 @@ class BancoDeDados:
 
         self.cursor.execute('''
             INSERT INTO users VALUES(
-            'allan.andrade', '#Trader2020');
+            'socorro.cordeiro', 
+            'pbkdf2:sha256:260000$AkqR38MGntnNa5Q4$07f18e176b2c0275d8de54671eea15fe896ac5574b7702261193045f3d201bee');
         ''')
 
-        self.cursor.execute('''
-                    INSERT INTO users VALUES(
-                    'socorro.cordeiro', 'Flexpag@2022');
-                ''')
+        # self.cursor.execute('''
+        #             INSERT INTO users VALUES(
+        #             'socorro.cordeiro', 'Flexpag@2022');
+        #         ''')
 
         self.commit()
 
@@ -200,3 +201,10 @@ class BancoDeDados:
             SELECT * FROM users;
             ''')
         return self.cursor.fetchall()
+
+    def pesquisar_usuario(self, usuario: str) -> list:
+        self.cursor.execute(f'''
+            SELECT * FROM users
+                WHERE usuario = '{usuario}';
+        ''')
+        return self.cursor.fetchone()
