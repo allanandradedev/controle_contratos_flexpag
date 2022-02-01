@@ -128,7 +128,7 @@ class ConfirmaNovoContrato:
                                          duracao,
                                          situacao,
                                          self.observacoes,
-                                         situacao)
+                                         self.renovado)
                 self.banco.commit()
                 GerenciadorDeAnexos().anexar_contrato(self.anexo, self.banco.ver_ultimo_id())
                 return 200
