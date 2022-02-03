@@ -8,6 +8,7 @@ from controller.abreContrato import AbreAnexos
 from views.popupBotaoDireito import PopUpMenu
 from controller.formatacoesIO import FormatacoesIO
 from controller.chamaContratosaVencer import ContratosVencendo
+from controller.chamaAtualizarContratos import AtualizaContratos
 
 global upper_field_image
 global search_field_image
@@ -226,6 +227,7 @@ class JanelaInicial:
             height=30.0
         )
 
+        AtualizaContratos.atualizar_situacao_contratos()
         self.inserir_pesquisa_na_tabela(tree, '')
         self.aviso_contratos_a_vencer()
 

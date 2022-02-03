@@ -49,11 +49,6 @@ class BancoDeDados:
             'pbkdf2:sha256:260000$AkqR38MGntnNa5Q4$07f18e176b2c0275d8de54671eea15fe896ac5574b7702261193045f3d201bee');
         ''')
 
-        # self.cursor.execute('''
-        #             INSERT INTO users VALUES(
-        #             'socorro.cordeiro', 'Flexpag@2022');
-        #         ''')
-
         self.commit()
 
     # Realiza uma pesquisa na tabela contratos utilizando o contratado como parâmetro
@@ -208,3 +203,13 @@ class BancoDeDados:
                 WHERE usuario = '{usuario}';
         ''')
         return self.cursor.fetchone()
+
+    def atualiza_situacao_contratos(self, id_contrato: int, situacao: str) -> None:
+        self.cursor.execute(f'''
+                    UPDATE contratos
+                        SET
+                            situacao = '{situacao}'
+                        WHERE
+                            id = '{id_contrato}'
+                ''')
+        self.conexao.commit()
